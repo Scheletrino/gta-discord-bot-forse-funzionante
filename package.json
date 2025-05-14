@@ -1,0 +1,15 @@
+
+{
+  "name": "gta-discord-bot-slash",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.5.0",
+    "dayjs": "^1.11.9",
+    "@discordjs/builders": "^1.6.6"
+  }
+}
