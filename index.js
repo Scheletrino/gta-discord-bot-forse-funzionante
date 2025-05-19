@@ -1,14 +1,15 @@
 
 // ==================== index.js ====================
+// ==================== index.js ====================
 // Posiziona questo file nella root del progetto
 
 const fs = require('fs');
 const path = require('path');
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const http = require('http');
+const { Client, Collection, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 require('dotenv').config();
 
 // Keep-alive HTTP server per Render (opzionale)
-const http = require('http');
 const port = process.env.PORT || 3000;
 http.createServer((req, res) => {
   res.writeHead(200);
@@ -16,6 +17,19 @@ http.createServer((req, res) => {
 }).listen(port, () => {
   console.log(`✅ Server HTTP in ascolto sulla porta ${port}`);
 });
+
+// Costanti countdown
+const CANALE_COUNTDOWN = '1372183339032645672';
+const GTA6_RELEASE = new Date('2026-05-26T00:00:00Z');
+
+// Funzione di formattazione del tempo
+function formatTime(ms) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const days    = Math.floor(totalSeconds / (3600*24));
+  const hours   = Math.floor((totalSeconds % (3600*24)) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  return `${days} giorni, ${hours} ore, ${minutes} minuti`;
+}
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.commands = new Collection();
@@ -43,10 +57,11 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
+// ==================== READY & COUNTDOWN AUTOMATICO ====================
 client.once('ready', async () => {
   console.log(`✅ Bot online come ${client.user.tag}`);
 
-  // Imposta il canale per il countdown
+  // Recupera il canale di countdown
   const channel = await client.channels.fetch(CANALE_COUNTDOWN);
   if (!channel?.isTextBased()) return console.warn('Canale countdown non trovato.');
 
@@ -56,12 +71,13 @@ client.once('ready', async () => {
 
   // Embed iniziale con emoji e titolo grande
   const initialEmbed = new EmbedBuilder()
-    .setTitle(`${clockEmojis[frame]} ⏳ Calcolo tempo mancante a GTA 6...`)
+    .setTitle(`${clockEmojis[frame]} ⏳ Mancano ${formatTime(GTA6_RELEASE - new Date())} all'uscita di GTA 6`)
     .setColor('#FF0000');
 
-  let countdownMsg = await channel.send({ embeds: [initialEmbed] });
+  // Invia il messaggio di countdown
+  const countdownMsg = await channel.send({ embeds: [initialEmbed] });
 
-  // Timer che aggiorna l'embed ogni minuto
+  // Aggiorna l'embed ogni minuto
   setInterval(async () => {
     frame++;
     const diff = GTA6_RELEASE - new Date();
@@ -76,3 +92,8 @@ client.once('ready', async () => {
     await countdownMsg.edit({ embeds: [embed] });
   }, 60_000);
 });
+
+// Avvia il bot
+client.login(process.env.DISCORD_TOKEN);
+
+// Assicurati di avere una cartella 'commands/' nella root contenente i file dei comandi.
