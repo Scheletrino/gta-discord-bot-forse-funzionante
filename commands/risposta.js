@@ -16,22 +16,19 @@ module.exports = {
     if (interaction.channel.id !== CANALE_AUTORIZZATO) {
       return interaction.reply({ content: '❌ Questo comando può essere usato solo nel canale designato.', ephemeral: true });
     }
-
     const answer = interaction.options.getString('lettera').toUpperCase();
     const map = interaction.client.activeQuestions || {};
     const correct = map[interaction.user.username];
-
     if (!correct) {
-      return interaction.reply('❌ Nessuna domanda attiva. Usa `/minigioco`!');
+      return interaction.reply({ content: '❌ Nessuna domanda attiva. Usa `/minigioco`!', ephemeral: true });
     }
-
     if (answer === correct) {
       addPoints(interaction.user.username, 1);
-      await interaction.reply(`✅ Risposta corretta! Hai guadagnato 1 punto.`);
+      await interaction.reply('✅ Risposta corretta! Hai guadagnato 1 punto.');
     } else {
       await interaction.reply(`❌ Sbagliato! La risposta giusta era **${correct}**.`);
     }
-
     delete map[interaction.user.username];
   }
 };
+
