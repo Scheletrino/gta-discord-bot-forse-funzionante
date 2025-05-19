@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 require('dotenv').config();
+const http = require('http');
+
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.commands = new Collection();
@@ -32,6 +34,13 @@ client.on('interactionCreate', async interaction => {
 
 client.once('ready', () => {
   console.log(`✅ Bot online come ${client.user.tag}`);
+});
+const port = process.env.PORT || 3000;
+http.createServer((req, res) => {
+  res.writeHead(200);
+  res.end('Bot Discord attivo');
+}).listen(port, () => {
+  console.log(`✅ Server HTTP di keep-alive in ascolto sulla porta ${port}`);
 });
 
 client.login(process.env.DISCORD_TOKEN);
