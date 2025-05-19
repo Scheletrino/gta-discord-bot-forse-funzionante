@@ -1,6 +1,7 @@
-
 const { SlashCommandBuilder } = require('discord.js');
 const { addPoints } = require('../utils/scoreManager');
+
+const CANALE_AUTORIZZATO = '1372183510500114543';
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,6 +13,10 @@ module.exports = {
          .setRequired(true)
     ),
   async execute(interaction) {
+    if (interaction.channel.id !== CANALE_AUTORIZZATO) {
+      return interaction.reply({ content: '❌ Questo comando può essere usato solo nel canale designato.', ephemeral: true });
+    }
+
     const answer = interaction.options.getString('lettera').toUpperCase();
     const map = interaction.client.activeQuestions || {};
     const correct = map[interaction.user.username];
