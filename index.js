@@ -1,6 +1,5 @@
 
 // ==================== index.js ====================
-// ==================== index.js ====================
 // Posiziona questo file nella root del progetto
 
 const fs = require('fs');
@@ -31,7 +30,7 @@ function formatTime(ms) {
   return `${days} giorni, ${hours} ore, ${minutes} minuti`;
 }
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 client.commands = new Collection();
 
 // Carica comandi dalla cartella commands/
@@ -50,7 +49,7 @@ client.on('interactionCreate', async interaction => {
   const command = client.commands.get(interaction.commandName);
   if (!command) return;
   try {
-    await command.execute(interaction);
+    await command.execute(interaction, client);
   } catch (error) {
     console.error(error);
     await interaction.reply({ content: '❌ Errore durante l\'esecuzione del comando.', ephemeral: true });
