@@ -2,23 +2,22 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { removePoints } = require('../utils/scoreManager');
 
+const RUOLI_AUTORIZZATI = ['🎴Manager🎴', '⚜️Head-Admin⚜️'];
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('rimuovipunti')
-    .setDescription('Rimuove punti a un giocatore')
-    .addStringOption(opt =>
-      opt.setName('nome').setDescription('Nome giocatore').setRequired(true))
-    .addIntegerOption(opt =>
-      opt.setName('punti').setDescription('Punti da togliere').setRequired(true)
-    ),
+    .setDescription('Rimuovi punti a un giocatore')
+    .addStringOption(opt => opt.setName('nome').setDescription('Nome del giocatore').setRequired(true))
+    .addIntegerOption(opt => opt.setName('punti').setDescription('Numero di punti da rimuovere').setRequired(true)),
   async execute(interaction) {
-    const name = interaction.options.getString('nome');
-    const points = interaction.options.getInteger('punti');
-    const allowed = ["🎴Manager🎴", "⚜️Head-Admin⚜️"];
-    if (!interaction.member.roles.cache.some(r => allowed.includes(r.name))) {
-      return interaction.reply({ content: '❌ Non hai il permesso per usare questo comando.', ephemeral: true });
+    const memberRoles = interaction.member.roles.cache.map(r => r.name);
+    if (!memberRoles.some(r => RUOLI_AUTORIZZATI.includes(r))) {
+      return interaction.reply({ content: '❌ Non hai i permessi per usare questo comando.', ephemeral: true });
     }
-    removePoints(name, points);
-    interaction.reply(`✅ Rimossi ${points} punti da **${name}**.`);
+    const nome = interaction.options.getString('nome');
+    const punti = interaction.options.getInteger('punti');
+    removePoints(nome, punti);
+    await interaction.reply(`✅ Rimossi ${punti} punti a **${nome}**.`);
   }
 };
