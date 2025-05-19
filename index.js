@@ -1,54 +1,38 @@
 
-require('dotenv').config();
 const fs = require('fs');
-const { Client, GatewayIntentBits, Collection, Events, REST, Routes } = require('discord.js');
-const express = require('express');
+const path = require('path');
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
+require('dotenv').config();
 
-const client = new Client({
-  intents: [GatewayIntentBits.Guilds]
-});
-
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.commands = new Collection();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
-  client.commands.set(command.data.name, command);
-}
 
-client.once(Events.ClientReady, async () => {
-  console.log(`✅ Bot online come ${client.user.tag}`);
+// Carica comandi dalla cartella commands/
+const commandsPath = path.join(__dirname, 'commands');
+fs.readdirSync(commandsPath)
+  .filter(file => file.endsWith('.js'))
+  .forEach(file => {
+    const filePath = path.join(commandsPath, file);
+    const command = require(filePath);
+    client.commands.set(command.data.name, command);
+  });
 
-  const commands = client.commands.map(cmd => cmd.data.toJSON());
-  const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
-
-  try {
-    await rest.put(
-      Routes.applicationGuildCommands(process.env.CLIENT_ID, '1247199833220190300'),
-      { body: commands }
-    );
-    console.log("✅ Comandi slash registrati");
-  } catch (err) {
-    console.error("❌ Errore registrazione comandi:", err);
-  }
-});
-
-client.on(Events.InteractionCreate, async interaction => {
-  if (!interaction.isChatInputCommand()) return;
+// Gestione interazioni
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isCommand()) return;
   const command = client.commands.get(interaction.commandName);
   if (!command) return;
-
   try {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
-    if (!interaction.replied) {
-      await interaction.reply({ content: "❌ Errore durante l'esecuzione del comando.", ephemeral: true });
-    }
+    await interaction.reply({ content: '❌ Errore durante l\'esecuzione del comando.', ephemeral: true });
   }
 });
 
-const app = express();
-app.get('/', (_, res) => res.send('Bot GTA attivo'));
-app.listen(process.env.PORT || 3000);
+client.once('ready', () => {
+  console.log(`✅ Bot online come ${client.user.tag}`);
+});
 
 client.login(process.env.DISCORD_TOKEN);
+
