@@ -2,14 +2,19 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { resetScores } = require('../utils/scoreManager');
 
+const RUOLI_AUTORIZZATI = ['🎴Manager🎴', '⚜️Head-Admin⚜️'];
+
 module.exports = {
-  data: new SlashCommandBuilder().setName('resetpunteggi').setDescription('Resetta tutta la classifica'),
+  data: new SlashCommandBuilder()
+    .setName('resetpunteggi')
+    .setDescription('Azzera tutti i punteggi'),
   async execute(interaction) {
-    const allowed = ["🎴Manager🎴", "⚜️Head-Admin⚜️"];
-    if (!interaction.member.roles.cache.some(r => allowed.includes(r.name))) {
-      return interaction.reply({ content: '❌ Non hai il permesso per usare questo comando.', ephemeral: true });
+    const memberRoles = interaction.member.roles.cache.map(r => r.name);
+    if (!memberRoles.some(r => RUOLI_AUTORIZZATI.includes(r))) {
+      return interaction.reply({ content: '❌ Non hai i permessi per usare questo comando.', ephemeral: true });
     }
     resetScores();
-    interaction.reply('✅ Classifica azzerata.');
+    await interaction.reply('✅ Classifica azzerata.');
   }
 };
+
