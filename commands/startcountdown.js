@@ -18,39 +18,28 @@ module.exports = {
     .setName('startcountdown')
     .setDescription('Avvia il countdown verso l\'uscita di GTA 6'),
   async execute(interaction) {
-    // Controllo ruolo
     const memberRoles = interaction.member.roles.cache.map(r => r.name);
     if (!memberRoles.some(r => RUOLI_AUTORIZZATI.includes(r))) {
-      return interaction.reply({ content: '❌ Non hai i permessi per usare questo comando.', ephemeral: true });
+      return interaction.reply({ content: '❌ Non hai i permessi.', ephemeral: true });
     }
-
     if (interaction.channel.id !== CANALE_COUNTDOWN) {
-      return interaction.reply({ content: `❌ Usa questo comando solo nel canale <#${CANALE_COUNTDOWN}>`, ephemeral: true });
+      return interaction.reply({ content: `❌ Usa solo in <#${CANALE_COUNTDOWN}>`, ephemeral: true });
     }
-
     if (countdownInterval) {
-      return interaction.reply({ content: '⏳ Countdown già in esecuzione!', ephemeral: true });
+      return interaction.reply({ content: '⏳ Countdown già attivo.', ephemeral: true });
     }
-
-    // Data uscita GTA 6
     const gta6Release = new Date('2026-05-26T00:00:00Z');
-
-    // Invia messaggio iniziale
-    const msg = await interaction.reply({ content: '⏳ Calcolo tempo mancante a GTA 6...', fetchReply: true });
-
-    // Funzione aggiorna messaggio
+    await interaction.reply('⏳ Calcolo tempo mancante...');
+    const msg = await interaction.fetchReply();
     countdownInterval = setInterval(async () => {
-      const now = new Date();
-      const diff = gta6Release - now;
+      const diff = gta6Release - new Date();
       if (diff <= 0) {
-        await msg.edit('🎉 GTA 6 è uscito! Buon divertimento!');
+        await msg.edit('🎉 GTA 6 è uscito!');
         clearInterval(countdownInterval);
         countdownInterval = null;
         return;
       }
-      const formatted = formatTime(diff);
-      await msg.edit(`⏳ Mancano **${formatted}** all'uscita di GTA 6.`);
-    }, 60000); // ogni 60 secondi
-
+      await msg.edit(`⏳ Mancano **${formatTime(diff)}** all'uscita di GTA 6.`);
+    }, 60000);
   }
 };
