@@ -1,0 +1,13 @@
+
+[
+  {
+    "question": "Qual è la città principale di GTA San Andreas?",
+    "options": ["A) Liberty City", "B) Los Santos", "C) Vice City", "D) North Yankton"],
+    "correct": "B"
+  },
+  {
+    "question": "Chi è uno dei protagonisti di GTA V?",
+    "options": ["A) Tommy", "B) CJ", "C) Franklin", "D) Niko"],
+    "correct": "C"
+  }
+]
