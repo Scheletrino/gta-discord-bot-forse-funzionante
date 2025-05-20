@@ -7,8 +7,7 @@ module.exports = {
 
   async execute(interaction) {
     const domande = [
-
-      // ========== 📘 Domande normali ==========
+      // Domande normali
       {
         tipo: 'quiz',
         categoria: 'GTA V',
@@ -80,7 +79,7 @@ module.exports = {
         rispostaCorretta: 2,
       },
 
-      // ========== 🖼️ Domande con immagine ==========
+      // Domande con immagine
       {
         tipo: 'luogo',
         descrizione: 'Questa zona desertica ospita Sandy Shores e l’aeroporto abbandonato.',
@@ -169,4 +168,44 @@ module.exports = {
       buttons.addComponents(
         new ButtonBuilder()
           .setCustomId(`answer_${index}`)
-          .
+          .setLabel(opzione)
+          .setStyle(ButtonStyle.Primary)
+      );
+    });
+
+    const message = await interaction.reply({
+      embeds: [embed],
+      components: [buttons],
+      flags: 64
+    });
+
+    const collector = message.createMessageComponentCollector({ time: 15_000 });
+
+    collector.on('collect', async i => {
+      if (i.user.id !== interaction.user.id) {
+        return i.reply({ content: '❌ Questo quiz non è per te!', flags: 64 });
+      }
+
+      const selected = parseInt(i.customId.split('_')[1], 10);
+      const correct = selected === domanda.rispostaCorretta;
+
+      await i.update({
+        content: correct ? '✅ Risposta corretta!' : `❌ Risposta sbagliata. Quella giusta era **${domanda.opzioni[domanda.rispostaCorretta]}**.`,
+        embeds: [],
+        components: []
+      });
+
+      collector.stop();
+    });
+
+    collector.on('end', async collected => {
+      if (collected.size === 0) {
+        await interaction.editReply({
+          content: '⏱️ Tempo scaduto! Nessuna risposta.',
+          embeds: [],
+          components: []
+        });
+      }
+    });
+  }
+};
