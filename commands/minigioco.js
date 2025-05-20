@@ -75,19 +75,22 @@ const indovinaPosti = [
     tipo: 'luogo',
     descrizione: 'Questa zona desertica ospita Sandy Shores e l’aeroporto abbandonato.',
     opzioni: ['Paleto Bay', 'Harmony', 'Sandy Shores', 'Grapeseed'],
-    rispostaCorretta: 2
+    rispostaCorretta: 2,
+    immagine: 'https://i.imgur.com/yNTHjDk.jpg' // esempio immagine
   },
   {
     tipo: 'luogo',
     descrizione: 'Quartiere ricco dove vive Michael.',
     opzioni: ['Davis', 'Rockford Hills', 'Del Perro', 'Vinewood'],
-    rispostaCorretta: 1
+    rispostaCorretta: 1,
+    immagine: 'https://i.imgur.com/tjlST8k.jpg' // esempio immagine
   },
   {
     tipo: 'luogo',
     descrizione: 'Zona industriale dove spesso si svolgono missioni criminali.',
     opzioni: ['La Puerta', 'Elysian Island', 'Terminal', 'Cypress Flats'],
-    rispostaCorretta: 3
+    rispostaCorretta: 3,
+    immagine: 'https://i.imgur.com/xKpqUeL.jpg' // esempio immagine
   }
 ];
 
@@ -118,6 +121,10 @@ module.exports = {
       .setTitle(domanda.tipo === 'quiz' ? `🎮 Domanda (${domanda.categoria})` : '📍 Indovina il luogo')
       .setDescription(domanda.tipo === 'quiz' ? domanda.domanda : domanda.descrizione)
       .setColor(domanda.tipo === 'quiz' ? '#FFA500' : '#00BFFF');
+
+    if (domanda.tipo === 'luogo' && domanda.immagine) {
+      embed.setImage(domanda.immagine);
+    }
 
     const row = new ActionRowBuilder();
     domanda.opzioni.forEach((opzione, i) => {
@@ -162,6 +169,5 @@ module.exports = {
     });
   },
 };
-
 
 
