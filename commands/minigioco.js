@@ -1,173 +1,172 @@
-// commands/minigioco.js
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, EmbedBuilder } = require('discord.js');
-
-const quizDomande = [
-  // GTA Storia
-  {
-    tipo: 'quiz',
-    categoria: 'GTA Storia',
-    domanda: 'Chi è il protagonista principale di GTA V?',
-    opzioni: ['Franklin', 'Michael', 'Trevor', 'CJ'],
-    rispostaCorretta: 1,
-  },
-  {
-    tipo: 'quiz',
-    categoria: 'GTA Storia',
-    domanda: 'In che anno è ambientato GTA: San Andreas?',
-    opzioni: ['1992', '1985', '2001', '1999'],
-    rispostaCorretta: 0,
-  },
-  {
-    tipo: 'quiz',
-    categoria: 'GTA Storia',
-    domanda: 'Chi tradisce CJ in GTA: San Andreas?',
-    opzioni: ['Sweet', 'Ryder', 'Big Smoke', 'Tenpenny'],
-    rispostaCorretta: 2,
-  },
-  // GTA Curiosità
-  {
-    tipo: 'quiz',
-    categoria: 'GTA Curiosità',
-    domanda: 'In quale città fittizia è ambientato GTA: Vice City?',
-    opzioni: ['Los Santos', 'Las Venturas', 'Vice City', 'Liberty City'],
-    rispostaCorretta: 2,
-  },
-  {
-    tipo: 'quiz',
-    categoria: 'GTA Curiosità',
-    domanda: 'Quale famoso attore ha doppiato Tommy Vercetti?',
-    opzioni: ['Ray Liotta', 'Robert De Niro', 'Al Pacino', 'Joe Pesci'],
-    rispostaCorretta: 0,
-  },
-  {
-    tipo: 'quiz',
-    categoria: 'GTA Curiosità',
-    domanda: 'Quale città reale ha ispirato Los Santos?',
-    opzioni: ['New York', 'Miami', 'Los Angeles', 'Chicago'],
-    rispostaCorretta: 2,
-  },
-  // GTA Meccaniche
-  {
-    tipo: 'quiz',
-    categoria: 'GTA Meccaniche',
-    domanda: 'Quale veicolo non è pilotabile in GTA V?',
-    opzioni: ['Jet', 'Bicicletta', 'Portaerei', 'Monster Truck'],
-    rispostaCorretta: 2,
-  },
-  {
-    tipo: 'quiz',
-    categoria: 'GTA Meccaniche',
-    domanda: 'Cosa succede se accumuli 5 stelle di sospetto in GTA V?',
-    opzioni: ['Ti inseguono i civili', 'Arriva la SWAT', 'Compare Trevor', 'Il gioco si blocca'],
-    rispostaCorretta: 1,
-  },
-  {
-    tipo: 'quiz',
-    categoria: 'GTA Meccaniche',
-    domanda: 'Quale di questi non è un’arma in GTA V?',
-    opzioni: ['Fucile a pompa', 'Ascia da pompiere', 'Spada laser', 'Granata adesiva'],
-    rispostaCorretta: 2,
-  }
-];
-
-const indovinaPosti = [
-  {
-    tipo: 'luogo',
-    descrizione: 'Questa zona desertica ospita Sandy Shores e l’aeroporto abbandonato.',
-    opzioni: ['Paleto Bay', 'Harmony', 'Sandy Shores', 'Grapeseed'],
-    rispostaCorretta: 2,
-    immagine: 'https://i.imgur.com/yNTHjDk.jpg' // esempio immagine
-  },
-  {
-    tipo: 'luogo',
-    descrizione: 'Quartiere ricco dove vive Michael.',
-    opzioni: ['Davis', 'Rockford Hills', 'Del Perro', 'Vinewood'],
-    rispostaCorretta: 1,
-    immagine: 'https://i.imgur.com/tjlST8k.jpg' // esempio immagine
-  },
-  {
-    tipo: 'luogo',
-    descrizione: 'Zona industriale dove spesso si svolgono missioni criminali.',
-    opzioni: ['La Puerta', 'Elysian Island', 'Terminal', 'Cypress Flats'],
-    rispostaCorretta: 3,
-    immagine: 'https://i.imgur.com/xKpqUeL.jpg' // esempio immagine
-  }
-];
-
-let domandeUsate = [];
-
-function prendiDomandaCasuale() {
-  const tutte = [...quizDomande, ...indovinaPosti];
-  const nonUsate = tutte.filter(d => !domandeUsate.includes(d));
-  if (nonUsate.length === 0) return null;
-  const scelta = nonUsate[Math.floor(Math.random() * nonUsate.length)];
-  domandeUsate.push(scelta);
-  return scelta;
-}
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('minigioco')
-    .setDescription('Avvia un minigioco quiz o indovina il luogo su GTA!'),
+    .setDescription('Avvia un minigioco con una domanda a scelta multipla'),
 
   async execute(interaction) {
-    const domanda = prendiDomandaCasuale();
-    if (!domanda) {
-      domandeUsate = [];
-      return interaction.reply('✅ Hai risposto a tutte le domande disponibili! Rigioca fra poco.');
-    }
+    const domande = [
+
+      // ========== 📘 Domande normali ==========
+      {
+        tipo: 'quiz',
+        categoria: 'GTA V',
+        domanda: 'Chi è il protagonista principale di GTA V?',
+        opzioni: ['Niko Bellic', 'CJ', 'Tommy Vercetti', 'Michael De Santa'],
+        rispostaCorretta: 3,
+      },
+      {
+        tipo: 'quiz',
+        categoria: 'GTA San Andreas',
+        domanda: 'Qual è il nome completo di CJ?',
+        opzioni: ['Carl Johnson', 'Christopher Johnson', 'Clarence Jones', 'Carlos Jimenez'],
+        rispostaCorretta: 0,
+      },
+      {
+        tipo: 'quiz',
+        categoria: 'GTA IV',
+        domanda: 'Da quale paese proviene Niko Bellic?',
+        opzioni: ['Russia', 'Serbia', 'Polonia', 'Albania'],
+        rispostaCorretta: 1,
+      },
+      {
+        tipo: 'quiz',
+        categoria: 'GTA V',
+        domanda: 'Quale di questi non è un protagonista di GTA V?',
+        opzioni: ['Franklin', 'Trevor', 'Lamar', 'Michael'],
+        rispostaCorretta: 2,
+      },
+      {
+        tipo: 'quiz',
+        categoria: 'GTA San Andreas',
+        domanda: 'Quale gang guida CJ?',
+        opzioni: ['Ballas', 'Grove Street Families', 'Los Santos Vagos', 'Vercetti Gang'],
+        rispostaCorretta: 1,
+      },
+      {
+        tipo: 'quiz',
+        categoria: 'GTA V',
+        domanda: 'Dove vive Trevor Philips?',
+        opzioni: ['Los Santos', 'Sandy Shores', 'Vinewood', 'Paleto Bay'],
+        rispostaCorretta: 1,
+      },
+      {
+        tipo: 'quiz',
+        categoria: 'GTA IV',
+        domanda: 'Chi è il cugino di Niko?',
+        opzioni: ['Dimitri', 'Vlad', 'Roman', 'Brucie'],
+        rispostaCorretta: 2,
+      },
+      {
+        tipo: 'quiz',
+        categoria: 'GTA San Andreas',
+        domanda: 'In che città inizia GTA San Andreas?',
+        opzioni: ['Las Venturas', 'Los Santos', 'San Fierro', 'Vice City'],
+        rispostaCorretta: 1,
+      },
+      {
+        tipo: 'quiz',
+        categoria: 'GTA V',
+        domanda: 'Quale azienda possiede Trevor?',
+        opzioni: ['Trevor Philips Industries', 'Phillips Arms', 'Los Santos Gunrunners', 'T Industries'],
+        rispostaCorretta: 0,
+      },
+      {
+        tipo: 'quiz',
+        categoria: 'GTA V',
+        domanda: 'Chi è il marito di Amanda?',
+        opzioni: ['Trevor', 'Franklin', 'Michael', 'Steve'],
+        rispostaCorretta: 2,
+      },
+
+      // ========== 🖼️ Domande con immagine ==========
+      {
+        tipo: 'luogo',
+        descrizione: 'Questa zona desertica ospita Sandy Shores e l’aeroporto abbandonato.',
+        opzioni: ['Paleto Bay', 'Harmony', 'Sandy Shores', 'Grapeseed'],
+        rispostaCorretta: 2,
+        immagine: 'https://i.imgur.com/GdsD2G3.jpeg'
+      },
+      {
+        tipo: 'luogo',
+        descrizione: 'Questa zona balneare è famosa per la sua spiaggia e la ruota panoramica.',
+        opzioni: ['Del Perro', 'Vespucci Beach', 'Paleto Cove', 'Chumash'],
+        rispostaCorretta: 1,
+        immagine: 'https://i.imgur.com/Jj6P9Ku.jpeg'
+      },
+      {
+        tipo: 'luogo',
+        descrizione: 'Questa zona industriale è sede di diversi magazzini e gang.',
+        opzioni: ['Elysian Island', 'Cypress Flats', 'La Mesa', 'Murrieta Heights'],
+        rispostaCorretta: 1,
+        immagine: 'https://i.imgur.com/QwA4j9f.jpeg'
+      },
+      {
+        tipo: 'luogo',
+        descrizione: 'Questa zona montuosa è sede di molte strade tortuose.',
+        opzioni: ['Mount Chiliad', 'Paleto Forest', 'Tataviam Mountains', 'Raton Canyon'],
+        rispostaCorretta: 0,
+        immagine: 'https://i.imgur.com/kDdWQXz.jpeg'
+      },
+      {
+        tipo: 'luogo',
+        descrizione: 'Questa zona è famosa per il campo da golf e le ville di lusso.',
+        opzioni: ['Rockford Hills', 'Vinewood Hills', 'Richman', 'Morningwood'],
+        rispostaCorretta: 0,
+        immagine: 'https://i.imgur.com/jfXBYXZ.jpeg'
+      },
+      {
+        tipo: 'luogo',
+        descrizione: 'Questa cittadina rurale si trova nel nord della mappa.',
+        opzioni: ['Grapeseed', 'Paleto Bay', 'Sandy Shores', 'Harmony'],
+        rispostaCorretta: 1,
+        immagine: 'https://i.imgur.com/CgkP9Zn.jpeg'
+      },
+      {
+        tipo: 'luogo',
+        descrizione: 'Questa zona ospita il porto principale della città.',
+        opzioni: ['Los Santos Port', 'Terminal', 'Elysian Island', 'South LS Docks'],
+        rispostaCorretta: 2,
+        immagine: 'https://i.imgur.com/6A29hdZ.jpeg'
+      },
+      {
+        tipo: 'luogo',
+        descrizione: 'Questa zona è l’area dell’aeroporto internazionale.',
+        opzioni: ['Fort Zancudo', 'Los Santos Intl', 'Sandy Airport', 'Palomino Airbase'],
+        rispostaCorretta: 1,
+        immagine: 'https://i.imgur.com/Rz8jwtu.jpeg'
+      },
+      {
+        tipo: 'luogo',
+        descrizione: 'Zona collinare con la famosa scritta "VINEWOOD".',
+        opzioni: ['Richman', 'Vinewood Hills', 'Rockford Hills', 'Vespucci Canals'],
+        rispostaCorretta: 1,
+        immagine: 'https://i.imgur.com/2FIBJhG.jpeg'
+      },
+      {
+        tipo: 'luogo',
+        descrizione: 'Un luogo paludoso a nord-est della mappa.',
+        opzioni: ['Alamo Sea', 'Paleto Forest', 'Zancudo Swamp', 'Tataviam Mountains'],
+        rispostaCorretta: 2,
+        immagine: 'https://i.imgur.com/4rA1Ght.jpeg'
+      }
+    ];
+
+    const domanda = domande[Math.floor(Math.random() * domande.length)];
 
     const embed = new EmbedBuilder()
       .setTitle(domanda.tipo === 'quiz' ? `🎮 Domanda (${domanda.categoria})` : '📍 Indovina il luogo')
       .setDescription(domanda.tipo === 'quiz' ? domanda.domanda : domanda.descrizione)
       .setColor(domanda.tipo === 'quiz' ? '#FFA500' : '#00BFFF');
 
-    if (domanda.tipo === 'luogo' && domanda.immagine) {
+    if (domanda.immagine) {
       embed.setImage(domanda.immagine);
     }
 
-    const row = new ActionRowBuilder();
-    domanda.opzioni.forEach((opzione, i) => {
-      row.addComponents(
+    const buttons = new ActionRowBuilder();
+    domanda.opzioni.forEach((opzione, index) => {
+      buttons.addComponents(
         new ButtonBuilder()
-          .setCustomId(`risposta_${i}`)
-          .setLabel(opzione)
-          .setStyle(ButtonStyle.Primary)
-      );
-    });
-
-    const messaggio = await interaction.reply({ embeds: [embed], components: [row], fetchReply: true });
-
-    const collector = messaggio.createMessageComponentCollector({
-      componentType: ComponentType.Button,
-      time: 15_000,
-    });
-
-    collector.on('collect', async i => {
-      if (i.user.id !== interaction.user.id) {
-        return i.reply({ content: '⛔ Questo quiz non è per te!', ephemeral: true });
-      }
-
-      const scelta = parseInt(i.customId.split('_')[1]);
-      const corretta = scelta === domanda.rispostaCorretta;
-
-      await i.reply({
-        content: corretta
-          ? '✅ Risposta corretta!'
-          : `❌ Sbagliato! La risposta giusta era: **${domanda.opzioni[domanda.rispostaCorretta]}**`,
-        ephemeral: true
-      });
-      collector.stop();
-    });
-
-    collector.on('end', collected => {
-      if (collected.size === 0) {
-        interaction.editReply({ content: '⏰ Tempo scaduto! Nessuna risposta ricevuta.', components: [] });
-      } else {
-        interaction.editReply({ components: [] });
-      }
-    });
-  },
-};
-
-
+          .setCustomId(`answer_${index}`)
+          .
