@@ -85,70 +85,70 @@ module.exports = {
         descrizione: 'Questa zona desertica ospita Sandy Shores e l’aeroporto abbandonato.',
         opzioni: ['Paleto Bay', 'Harmony', 'Sandy Shores', 'Grapeseed'],
         rispostaCorretta: 2,
-        immagine: 'https://i.imgur.com/GdsD2G3.jpeg'
+        immagine: 'https://i.imgur.com/abc1234.jpg'
       },
       {
         tipo: 'luogo',
         descrizione: 'Questa zona balneare è famosa per la sua spiaggia e la ruota panoramica.',
         opzioni: ['Del Perro', 'Vespucci Beach', 'Paleto Cove', 'Chumash'],
         rispostaCorretta: 1,
-        immagine: 'https://i.imgur.com/Jj6P9Ku.jpeg'
+        immagine: 'https://i.imgur.com/def5678.jpg'
       },
       {
         tipo: 'luogo',
         descrizione: 'Questa zona industriale è sede di diversi magazzini e gang.',
         opzioni: ['Elysian Island', 'Cypress Flats', 'La Mesa', 'Murrieta Heights'],
         rispostaCorretta: 1,
-        immagine: 'https://i.imgur.com/QwA4j9f.jpeg'
+        immagine: 'https://i.imgur.com/ghi9012.jpg'
       },
       {
         tipo: 'luogo',
         descrizione: 'Questa zona montuosa è sede di molte strade tortuose.',
         opzioni: ['Mount Chiliad', 'Paleto Forest', 'Tataviam Mountains', 'Raton Canyon'],
         rispostaCorretta: 0,
-        immagine: 'https://i.imgur.com/kDdWQXz.jpeg'
+        immagine: 'https://i.imgur.com/jkl3456.jpg'
       },
       {
         tipo: 'luogo',
         descrizione: 'Questa zona è famosa per il campo da golf e le ville di lusso.',
         opzioni: ['Rockford Hills', 'Vinewood Hills', 'Richman', 'Morningwood'],
         rispostaCorretta: 0,
-        immagine: 'https://i.imgur.com/jfXBYXZ.jpeg'
+        immagine: 'https://i.imgur.com/mno7890.jpg'
       },
       {
         tipo: 'luogo',
         descrizione: 'Questa cittadina rurale si trova nel nord della mappa.',
         opzioni: ['Grapeseed', 'Paleto Bay', 'Sandy Shores', 'Harmony'],
         rispostaCorretta: 1,
-        immagine: 'https://i.imgur.com/CgkP9Zn.jpeg'
+        immagine: 'https://i.imgur.com/pqr1234.jpg'
       },
       {
         tipo: 'luogo',
         descrizione: 'Questa zona ospita il porto principale della città.',
         opzioni: ['Los Santos Port', 'Terminal', 'Elysian Island', 'South LS Docks'],
         rispostaCorretta: 2,
-        immagine: 'https://i.imgur.com/6A29hdZ.jpeg'
+        immagine: 'https://i.imgur.com/stu5678.jpg'
       },
       {
         tipo: 'luogo',
         descrizione: 'Questa zona è l’area dell’aeroporto internazionale.',
         opzioni: ['Fort Zancudo', 'Los Santos Intl', 'Sandy Airport', 'Palomino Airbase'],
         rispostaCorretta: 1,
-        immagine: 'https://i.imgur.com/Rz8jwtu.jpeg'
+        immagine: 'https://i.imgur.com/vwx9012.jpg'
       },
       {
         tipo: 'luogo',
         descrizione: 'Zona collinare con la famosa scritta "VINEWOOD".',
         opzioni: ['Richman', 'Vinewood Hills', 'Rockford Hills', 'Vespucci Canals'],
         rispostaCorretta: 1,
-        immagine: 'https://i.imgur.com/2FIBJhG.jpeg'
+        immagine: 'https://i.imgur.com/yz12345.jpg'
       },
       {
         tipo: 'luogo',
         descrizione: 'Un luogo paludoso a nord-est della mappa.',
         opzioni: ['Alamo Sea', 'Paleto Forest', 'Zancudo Swamp', 'Tataviam Mountains'],
         rispostaCorretta: 2,
-        immagine: 'https://i.imgur.com/4rA1Ght.jpeg'
+        immagine: 'https://i.imgur.com/abc6789.jpg'
       }
     ];
 
@@ -179,7 +179,7 @@ module.exports = {
       flags: 64
     });
 
-    const collector = message.createMessageComponentCollector({ time: 15_000 });
+    const collector = message.createMessageComponentCollector({ time: 15000 });
 
     collector.on('collect', async i => {
       if (i.user.id !== interaction.user.id) {
@@ -205,6 +205,11 @@ module.exports = {
           embeds: [],
           components: []
         });
+      }
+    });
+  }
+};
+
       }
     });
   }
