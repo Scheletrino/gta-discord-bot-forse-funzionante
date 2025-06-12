@@ -1,75 +1,85 @@
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 
-// commands/indovinaLuogo.js
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, EmbedBuilder } = require('discord.js');
-const path = require('path');
-
-const luoghi = [
+// Array domande luogo
+const domandeLuogo = [
   {
-    immagine: 'assets/luoghi/vespucci-beach.jpg',
-    opzioni: ['Vespucci Beach', 'Del Perro Pier', 'Vinewood Hills', 'Sandy Shores'],
-    rispostaCorretta: 0,
+    descrizione: 'Questa zona desertica ospita Sandy Shores e l’aeroporto abbandonato.',
+    opzioni: ['Paleto Bay', 'Harmony', 'Sandy Shores', 'Grapeseed'],
+    rispostaCorretta: 2,
+    immagine: 'https://i.imgur.com/abc1234.jpg'
   },
   {
-    immagine: 'assets/luoghi/maze-bank.jpg',
-    opzioni: ['Maze Bank', 'FIB Building', 'IAA Headquarters', 'Los Santos Tower'],
-    rispostaCorretta: 0,
+    descrizione: 'Questa zona balneare è famosa per la sua spiaggia e la ruota panoramica.',
+    opzioni: ['Del Perro', 'Vespucci Beach', 'Paleto Cove', 'Chumash'],
+    rispostaCorretta: 1,
+    immagine: 'https://i.imgur.com/def5678.jpg'
   },
-  {
-    immagine: 'assets/luoghi/mount-chiliad.jpg',
-    opzioni: ['Mount Chiliad', 'Vinewood Hills', 'Paleto Forest', 'Alamo Sea'],
-    rispostaCorretta: 0,
-  }
+  // Aggiungi altre domande...
 ];
 
-function prendiLuogoCasuale() {
-  return luoghi[Math.floor(Math.random() * luoghi.length)];
-}
+let ultimaDomandaLuogo = null;
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('indovinaluogo')
-    .setDescription('Indovina il luogo mostrato nella foto di GTA'),
+    .setDescription('Indovina il luogo mostrato in un\'immagine di GTA'),
 
   async execute(interaction) {
-    const luogo = prendiLuogoCasuale();
+    let domanda;
+    do {
+      domanda = domandeLuogo[Math.floor(Math.random() * domandeLuogo.length)];
+    } while (domanda === ultimaDomandaLuogo && domandeLuogo.length > 1);
+    ultimaDomandaLuogo = domanda;
 
     const embed = new EmbedBuilder()
-      .setTitle('📸 Dove si trova questo luogo?')
-      .setImage(`attachment://${path.basename(luogo.immagine)}`)
-      .setColor('#00BFFF');
+      .setTitle('📍 Indovina il luogo')
+      .setDescription(domanda.descrizione)
+      .setColor('#00BFFF')
+      .setImage(domanda.immagine);
 
-    const row = new ActionRowBuilder();
-    luogo.opzioni.forEach((opzione, i) => {
-      row.addComponents(
+    const buttons = new ActionRowBuilder();
+    domanda.opzioni.forEach((opzione, index) => {
+      buttons.addComponents(
         new ButtonBuilder()
-          .setCustomId(`risposta_${i}`)
+          .setCustomId(`luogo_${index}`)
           .setLabel(opzione)
           .setStyle(ButtonStyle.Primary)
       );
     });
 
-    const allegato = { attachment: path.resolve(luogo.immagine), name: path.basename(luogo.immagine) };
-    const messaggio = await interaction.reply({ embeds: [embed], components: [row], files: [allegato], fetchReply: true });
-
-    const collector = messaggio.createMessageComponentCollector({
-      componentType: ComponentType.Button,
-      time: 15000,
+    const message = await interaction.reply({
+      embeds: [embed],
+      components: [buttons],
+      fetchReply: true
     });
+
+    const collector = message.createMessageComponentCollector({ time: 15000 });
 
     collector.on('collect', async i => {
       if (i.user.id !== interaction.user.id) {
-        return i.reply({ content: '⛔ Questo quiz è per qualcun altro!', ephemeral: true });
+        return i.reply({ content: '❌ Questo quiz non è per te!', ephemeral: true });
       }
 
-      const scelta = parseInt(i.customId.split('_')[1]);
-      const corretta = scelta === luogo.rispostaCorretta;
+      const selected = parseInt(i.customId.split('_')[1], 10);
+      const correct = selected === domanda.rispostaCorretta;
 
-      await i.reply({ content: corretta ? '✅ Giusto!' : `❌ No! La risposta corretta era: **${luogo.opzioni[luogo.rispostaCorretta]}**`, ephemeral: true });
+      await i.update({
+        content: correct ? '✅ Giusto!' : `❌ No! Era **${domanda.opzioni[domanda.rispostaCorretta]}**.`,
+        embeds: [],
+        components: []
+      });
+
       collector.stop();
     });
 
-    collector.on('end', () => {
-      interaction.editReply({ components: [] });
+    collector.on('end', async collected => {
+      if (collected.size === 0) {
+        await interaction.editReply({
+          content: '⏱️ Tempo scaduto!',
+          embeds: [],
+          components: []
+        });
+      }
     });
-  },
+  }
 };
